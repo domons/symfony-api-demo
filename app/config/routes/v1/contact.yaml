@@ -1,0 +1,9 @@
+contact-send_message:
+    path: /contact
+    controller: App\Contact\Controller\ContactSendMessageController
+    methods: POST
+
+contact-messages_list:
+    path: /contact
+    controller: App\Contact\Controller\ContactMessagesListController
+    methods: GET

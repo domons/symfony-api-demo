@@ -1,0 +1,249 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Symfony API Demo",
+        "description": "Dominik Barylski",
+        "version": "2026.01.17"
+    },
+    "paths": {
+        "/api/v1/contact": {
+            "get": {
+                "tags": [
+                    "Contact"
+                ],
+                "operationId": "get_v1_contact-messages_list",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Numer strony (paginacja)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Zwraca wiadomo\u015bci wys\u0142ane przez formularz kontaktowy",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContactMessagesListResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Contact"
+                ],
+                "operationId": "post_v1_contact-send_message",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContactMessageRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Poprawny zapis wiadomo\u015bci z formularza kontaktowego",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContactMessageCreatedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "B\u0142\u0105d walidacji p\u00f3l formularza kontaktowego",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ValidationProblemDetails": {
+                "description": "Problem Details (RFC 7807) dla b\u0142\u0119d\u00f3w walidacji (Symfony)",
+                "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "violations"
+                ],
+                "properties": {
+                    "type": {
+                        "description": "URI typu problemu",
+                        "type": "string",
+                        "example": "https://symfony.com/errors/validation"
+                    },
+                    "title": {
+                        "description": "Tytu\u0142 b\u0142\u0119du",
+                        "type": "string",
+                        "example": "Validation Failed"
+                    },
+                    "status": {
+                        "description": "HTTP status code",
+                        "type": "integer",
+                        "example": 422
+                    },
+                    "detail": {
+                        "description": "Szczeg\u00f3\u0142y w formie tekstowej",
+                        "type": "string",
+                        "example": "email: This value is not a valid email address.\nconsent: This value should be true."
+                    },
+                    "violations": {
+                        "description": "Lista narusze\u0144 walidacji",
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "propertyPath",
+                                "title"
+                            ],
+                            "properties": {
+                                "propertyPath": {
+                                    "description": "Nazwa pola",
+                                    "type": "string",
+                                    "example": "email"
+                                },
+                                "title": {
+                                    "description": "Komunikat walidacyjny",
+                                    "type": "string",
+                                    "example": "This value is not a valid email address."
+                                },
+                                "template": {
+                                    "description": "Szablon komunikatu",
+                                    "type": "string",
+                                    "example": "This value is not a valid email address."
+                                },
+                                "parameters": {
+                                    "description": "Parametry u\u017cyte do zbudowania komunikatu",
+                                    "type": "object",
+                                    "example": {
+                                        "{{ value }}": "\"dpl\""
+                                    },
+                                    "additionalProperties": true
+                                },
+                                "type": {
+                                    "description": "Identyfikator typu naruszenia",
+                                    "type": "string",
+                                    "example": "urn:uuid:bd79c0ab-ddba-46cc-a703-a7a4b08de310"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ContactMessageRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "content",
+                    "consent"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 70,
+                        "minLength": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "maxLength": 70,
+                        "minLength": 1
+                    },
+                    "content": {
+                        "type": "string",
+                        "maxLength": 3000,
+                        "minLength": 1
+                    },
+                    "consent": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "ContactMessagesListItem": {
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "content",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ContactMessagesListResponse": {
+                "required": [
+                    "items",
+                    "totalItems"
+                ],
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ContactMessagesListItem"
+                        }
+                    },
+                    "totalItems": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "ContactMessageCreatedResponse": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Contact"
+        }
+    ]
+}

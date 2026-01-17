@@ -1,0 +1,61 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Symfony API Demo
+            description: Dominik Barylski
+            version: 2026.01.17
+        components:
+            schemas:
+                ValidationProblemDetails:
+                    type: object
+                    description: "Problem Details (RFC 7807) dla błędów walidacji (Symfony)"
+                    required: [ type, title, status, detail, violations ]
+                    properties:
+                        type:
+                            type: string
+                            description: "URI typu problemu"
+                            example: "https://symfony.com/errors/validation"
+                        title:
+                            type: string
+                            description: "Tytuł błędu"
+                            example: "Validation Failed"
+                        status:
+                            type: integer
+                            description: "HTTP status code"
+                            example: 422
+                        detail:
+                            type: string
+                            description: "Szczegóły w formie tekstowej"
+                            example: "email: This value is not a valid email address.\nconsent: This value should be true."
+                        violations:
+                            type: array
+                            description: "Lista naruszeń walidacji"
+                            items:
+                                type: object
+                                required: [ propertyPath, title ]
+                                properties:
+                                    propertyPath:
+                                        type: string
+                                        description: "Nazwa pola"
+                                        example: "email"
+                                    title:
+                                        type: string
+                                        description: "Komunikat walidacyjny"
+                                        example: "This value is not a valid email address."
+                                    template:
+                                        type: string
+                                        description: "Szablon komunikatu"
+                                        example: "This value is not a valid email address."
+                                    parameters:
+                                        type: object
+                                        description: "Parametry użyte do zbudowania komunikatu"
+                                        additionalProperties: true
+                                        example:
+                                            "{{ value }}": "\"dpl\""
+                                    type:
+                                        type: string
+                                        description: "Identyfikator typu naruszenia"
+                                        example: "urn:uuid:bd79c0ab-ddba-46cc-a703-a7a4b08de310"
+    areas:
+        path_patterns:
+            - ^/api(?!/doc$)
